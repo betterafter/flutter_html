@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/html_parser.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -61,16 +62,17 @@ ImageRender base64ImageRender() => (context, attributes, element) {
           context.parser.onImageError?.call(exception, stackTrace);
         },
       );
-      return Image.memory(
-        decodedImage,
-        frameBuilder: (ctx, child, frame, _) {
-          if (frame == null) {
-            return Text(_alt(attributes) ?? "",
-                style: context.style.generateTextStyle());
-          }
-          return child;
-        },
-      );
+      return ExtendedImage.memory(decodedImage);
+      // return Image.memory(
+      //   decodedImage,
+      //   frameBuilder: (ctx, child, frame, _) {
+      //     if (frame == null) {
+      //       return Text(_alt(attributes) ?? "",
+      //           style: context.style.generateTextStyle());
+      //     }
+      //     return child;
+      //   },
+      // );
     };
 
 ImageRender assetImageRender({
@@ -113,19 +115,21 @@ ImageRender networkImageRender({
       if (context.parser.cachedImageSizes[src] != null) {
         completer.complete(context.parser.cachedImageSizes[src]);
       } else {
-        Image image = Image.network(src, frameBuilder: (ctx, child, frame, _) {
-          if (frame == null) {
-            if (!completer.isCompleted) {
-              completer.completeError("error");
-            }
-            return child;
-          } else {
-            return child;
-          }
-        });
+        var image = ExtendedImage.network(src);
+        // Image image = Image.network(src, frameBuilder: (ctx, child, frame, _) {
+        //   if (frame == null) {
+        //     if (!completer.isCompleted) {
+        //       completer.completeError("error");
+        //     }
+        //     return child;
+        //   } else {
+        //     return child;
+        //   }
+        // });
 
         ImageStreamListener? listener;
-        listener = ImageStreamListener((ImageInfo imageInfo, bool synchronousCall) {
+        listener =
+            ImageStreamListener((ImageInfo imageInfo, bool synchronousCall) {
           var myImage = imageInfo.image;
           Size size = Size(myImage.width.toDouble(), myImage.height.toDouble());
           if (!completer.isCompleted) {
@@ -156,20 +160,25 @@ ImageRender networkImageRender({
                           _aspectRatio(attributes, snapshot)),
               child: AspectRatio(
                 aspectRatio: _aspectRatio(attributes, snapshot),
-                child: Image.network(
+                child: ExtendedImage.network(
                   src,
-                  headers: headers,
                   width: width ?? _width(attributes) ?? snapshot.data!.width,
                   height: height ?? _height(attributes),
-                  frameBuilder: (ctx, child, frame, _) {
-                    if (frame == null) {
-                      return altWidget?.call(_alt(attributes)) ??
-                          Text(_alt(attributes) ?? "",
-                              style: context.style.generateTextStyle());
-                    }
-                    return child;
-                  },
                 ),
+                // child: Image.network(
+                //   src,
+                //   headers: headers,
+                //   width: width ?? _width(attributes) ?? snapshot.data!.width,
+                //   height: height ?? _height(attributes),
+                //   frameBuilder: (ctx, child, frame, _) {
+                //     if (frame == null) {
+                //       return altWidget?.call(_alt(attributes)) ??
+                //           Text(_alt(attributes) ?? "",
+                //               style: context.style.generateTextStyle());
+                //     }
+                //     return child;
+                //   },
+                // ),
               ),
             );
           } else if (snapshot.hasError) {
