@@ -1,5 +1,6 @@
 import 'dart:math' as math;
 
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_html/flutter_html.dart';
@@ -145,22 +146,25 @@ class CssBoxWidget extends StatelessWidget {
       if (style.listStyleImage != null) {
         return WidgetSpan(
           alignment: PlaceholderAlignment.middle,
-          child: Image.network(
+          child: ExtendedImage.network(
             style.listStyleImage!.uriText,
-            errorBuilder: (_, __, ___) {
-              if (style.marker?.content.replacementContent?.isNotEmpty ??
-                  false) {
-                return Text.rich(
-                  TextSpan(
-                    text: style.marker!.content.replacementContent!,
-                    style: style.marker!.style?.generateTextStyle(),
-                  ),
-                );
-              }
-
-              return Container();
-            },
           ),
+          // child: Image.network(
+          //   style.listStyleImage!.uriText,
+          //   errorBuilder: (_, __, ___) {
+          //     if (style.marker?.content.replacementContent?.isNotEmpty ??
+          //         false) {
+          //       return Text.rich(
+          //         TextSpan(
+          //           text: style.marker!.content.replacementContent!,
+          //           style: style.marker!.style?.generateTextStyle(),
+          //         ),
+          //       );
+          //     }
+
+          //     return Container();
+          //   },
+          // ),
         );
       }
 

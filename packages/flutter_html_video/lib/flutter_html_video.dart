@@ -1,6 +1,7 @@
 library flutter_html_video;
 
 import 'package:chewie/chewie.dart';
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:video_player/video_player.dart';
@@ -59,7 +60,8 @@ class _VideoWidgetState extends State<VideoWidget> {
         videoPlayerController: _videoController!,
         placeholder:
             attributes['poster'] != null && attributes['poster']!.isNotEmpty
-                ? Image.network(attributes['poster']!)
+                // ? Image.network(attributes['poster']!)
+                ? ExtendedImage.network(attributes['poster']!)
                 : Container(color: Colors.black),
         autoPlay: attributes['autoplay'] != null,
         looping: attributes['loop'] != null,
